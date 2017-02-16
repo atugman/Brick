@@ -33,6 +33,7 @@ for(c=0; c<brickColumnCount; c++) {
 }
 
 var score = 0;
+var lives = 5;
 
 function drawBall() {
 	ctx.beginPath();
@@ -46,6 +47,7 @@ function draw() {
 	ctx.clearRect(0, 0, canvas.width, canvas.height);
 	drawPaddle();
 	drawScore(); //score updates with every frame
+	drawLives();
 	drawBricks();
 	drawBall();
 
@@ -61,9 +63,19 @@ function draw() {
     		dy = -dy;
     	}
     	else {
-    		alert("GAME OVER");
-    		document.location.reload();
-	}
+			lives--;
+			if(!lives) {
+			    alert("GAME OVER");
+			    document.location.reload();
+			}
+			else {
+			    x = canvas.width/2;
+			    y = canvas.height-30;
+			    dx = 2;
+			    dy = -2;
+			    paddleX = (canvas.width-paddleWidth)/2;
+			}
+		}
 	}
 		if(rightPressed && paddleX < canvas.width-paddleWidth) {
     	paddleX += 7;
@@ -74,6 +86,7 @@ function draw() {
 	x += dx;
     y += dy;
     collisionDetection();
+    requestAnimationFrame(draw);
 }
 
 function drawPaddle() {
@@ -138,6 +151,12 @@ function drawScore() {
     ctx.fillText("Score: "+score, 8, 20);
 }
 
+function drawLives() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "#0095DD";
+    ctx.fillText("Lives: "+lives, canvas.width-65, 20);
+}
+
 function drawBricks() {
     for(c=0; c<brickColumnCount; c++) {
         for(r=0; r<brickRowCount; r++) {
@@ -156,4 +175,4 @@ function drawBricks() {
     }
 }
 
-setInterval(draw, 10);
+draw();
